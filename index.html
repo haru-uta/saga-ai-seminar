@@ -394,9 +394,10 @@ button.cta{border:0;cursor:pointer}
   #sticky{padding-left:16px;gap:10px}
 }
 @media (prefers-reduced-motion: reduce){ .sheen,.cta,.grain{animation:none} }
+#gate,#skip,#replay{display:none!important}
 </style>
 </head>
-<body class="locked">
+<body>
 <canvas class="fxl" id="bgfx"></canvas>
 <img class="photo" id="ph0" alt="">
 <img class="photo" id="ph1" alt="">
@@ -927,14 +928,7 @@ let lastW=0;addEventListener("resize",()=>{if(Math.abs(innerWidth-lastW)<2&&intr
   for(const k of ORDER)imgs[k]=await loadImg(BUSTS[k]);
   await document.fonts.ready;
   lastW=innerWidth;resize();initParticles();requestAnimationFrame(frame);
-  const start=snd=>{soundOn=snd;if(snd)initAudio();$("#gate").classList.add("off");runOpening();};
-  let seen=false;try{seen=localStorage.getItem("saga26_seen")==="1"}catch(e){}
-  try{localStorage.setItem("saga26_seen","1")}catch(e){}
-  if(seen){finishOpening();}
-  $("#go").onclick=()=>start(true);
-  $("#gomute").onclick=()=>start(false);
-  $("#skip").onclick=finishOpening;
-  $("#replay").onclick=()=>{if(soundOn)initAudio();runOpening();};
+  finishOpening();
 })();
 </script>
 </body>
