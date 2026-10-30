@@ -633,8 +633,9 @@ button.cta{border:0;cursor:pointer}
       <div class="fm-step on" data-step="0">
         <label class="f"><span class="fl">法人名・事業所名<b>必須</b></span><input name="entry.1293325594" maxlength="100" required autocomplete="organization"></label>
         <label class="f"><span class="fl">お名前<b>必須</b></span><input name="entry.1095176513" maxlength="60" required autocomplete="name"></label>
-        <label class="f"><span class="fl">部署・役職<i>任意</i></span><input name="entry.23983021" maxlength="60" autocomplete="organization-title"></label>
         <fieldset class="f"><legend class="fl">業種<b>必須</b></legend><div class="opts" data-name="entry.481567016" data-type="radio" data-required="1"></div></fieldset>
+        <fieldset class="f"><legend class="fl">役職<b>必須</b></legend><div class="opts" data-name="entry.23983021" data-type="checkbox" data-required="1" data-other="1" data-other-ph="役職"></div></fieldset>
+        <fieldset class="f"><legend class="fl">従業員数<b>必須</b></legend><div class="opts" data-name="entry.334243601" data-type="radio" data-required="1"></div></fieldset>
       </div>
       <div class="fm-step" data-step="1">
         <label class="f"><span class="fl">メールアドレス<b>必須</b></span><input name="entry.2083720245" type="email" maxlength="120" required autocomplete="email" inputmode="email"></label>
@@ -840,11 +841,13 @@ tick();setInterval(tick,1000);
 const RELAY="https://script.google.com/macros/s/AKfycbzI0VAckhYT_XAgfyE6o5-BNk97zHuH5TnrYmTSuDSo3LciaVKPsqLTKrc2w9P80gzIdg/exec", FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSf6Okq-eOuz1okKuXYVdHei4IKAizqN6LST71zoqJii-xrZXQ/viewform";
 const OPTS={
   "entry.481567016":["医療関係（病院・診療所・歯科医院など）","薬局・医薬品関連","福祉・介護","建設業","情報・通信業","教育","卸売業・小売業","製造業","士業・コンサルティング","その他"],
+  "entry.23983021":["代表者","経営陣","経理、総務、人事、法務等のバックオフィス","営業・販売","現場従事者"],
+  "entry.334243601":["１～１０人","10人～30人","30人～50人","50人～100人","100人以上"],
   "entry.890143083":["日常的に利用している","時々利用している","試したことがある程度","利用したことはない","よく分からない"],
   "entry.1371011491":["経理・請求書処理","給与計算・勤怠・労務管理","医療・介護保険請求・レセプト関連業務","採用・人事管理"],
   "entry.2010838989":["上記の個人情報の取扱いに同意します"]
 };
-const LABELS=[["entry.1293325594","法人名・事業所名"],["entry.1095176513","お名前"],["entry.23983021","部署・役職"],["entry.481567016","業種"],
+const LABELS=[["entry.1293325594","法人名・事業所名"],["entry.1095176513","お名前"],["entry.481567016","業種"],["entry.23983021","役職"],["entry.334243601","従業員数"],
   ["entry.2083720245","メールアドレス"],["entry.1895013584","電話番号"],["entry.890143083","生成AIの利用"],["entry.1371011491","課題に感じている業務"]];
 const esc=t=>t.replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
 function addOpt(box,name,type,value,text,extraClass){
@@ -856,7 +859,7 @@ $$(".opts").forEach(box=>{const name=box.dataset.name,type=box.dataset.type;
   (OPTS[name]||[]).forEach(v=>addOpt(box,name,type,v,v));
   if(box.dataset.other){
     const ck=addOpt(box,name,type,"__other_option__","その他","other-ck");
-    const inp=document.createElement("input");inp.className="other-in";inp.name=name+".other_option_response";inp.placeholder="その他の業務を入力";inp.maxLength=100;inp.setAttribute("aria-label","その他の業務");box.appendChild(inp);
+    const inp=document.createElement("input");inp.className="other-in";inp.name=name+".other_option_response";const what=box.dataset.otherPh||"業務";inp.placeholder="その他の"+what+"を入力";inp.maxLength=100;inp.setAttribute("aria-label","その他の"+what);box.appendChild(inp);
     ck.addEventListener("change",()=>{inp.classList.toggle("on",ck.checked);if(ck.checked)inp.focus()});}
 });
 // visual state for checked options (no reliance on :has)
