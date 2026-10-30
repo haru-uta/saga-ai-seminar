@@ -914,6 +914,9 @@ function openForm(){lastFocus=document.activeElement;if(!$("#fmdone").hidden)res
 function closeForm(){if(sending)return;fm.hidden=true;document.body.style.overflow="";if(lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true});}
 document.addEventListener("click",e=>{if(e.target.closest("[data-open-form]")){e.preventDefault();openForm()}else if(e.target.closest("[data-close-form]")){closeForm()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!fm.hidden)closeForm()});
+// #apply で開いたら、すぐ申込フォームを出す（申込だけを案内するリンク用）
+if(location.hash==="#apply")openForm();
+window.addEventListener("hashchange",()=>{if(location.hash==="#apply"&&fm.hidden)openForm()});
 $("#fmnext").onclick=()=>{if(!check(step))return;if(step<STEPS-1){showStep(step+1);return;}
   for(let i=0;i<STEPS;i++){if(!check(i)){const m=$("#fmerr").textContent;showStep(i);check(i);$("#fmerr").textContent=m;return;}}submit();};
 $("#fmprev").onclick=()=>{if(step>0)showStep(step-1)};
