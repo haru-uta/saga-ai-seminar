@@ -21,12 +21,14 @@ button{font:inherit;font-size:22px;font-weight:bold;margin-top:16px;padding:14px
 const API="https://script.google.com/macros/s/AKfycbxJhpMJG1srTCm4jzV-jy6cMCMEJ4tZyrmvVqI5tx8w3bXsp__wLmSo9IblYWJdK1uW/exec";
 const KEY="saga_bango_v1";
 const m=document.getElementById('m');
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
-function save(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+let mem={},canSave=true;
+try{localStorage.setItem(KEY+'_t','1');localStorage.removeItem(KEY+'_t')}catch(e){canSave=false}
+function load(){if(!canSave)return mem;try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return mem}}
+function save(o){mem=o;if(!canSave)return;try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){canSave=false}}
 function newCid(){const a=new Uint8Array(18);(crypto||msCrypto).getRandomValues(a);return Array.from(a,b=>"abcdefghijklmnopqrstuvwxyz0123456789"[b%36]).join('')}
 function show(n){
   m.innerHTML='<p class="lead">あなたの番号は</p><div class="card"><div class="num">'+n+'<small>ばん</small></div></div>'
-   +'<p class="note">このあと、この番号でくじを引きます。<br>画面はこのままでも、閉じても大丈夫です。<br>当たっても、前に出たり話したりはしません。</p>';
+   +(canSave?'':'<p class="note" style="color:#8a2a00;font-weight:bold">この画面を閉じないでください</p>')+'<p class="note">このあと、この番号で<br>くじを引きます。<br>画面は閉じても大丈夫です。<br>当たっても、前に出たり<br>話したりはしません。</p>';
   document.title='あなたは '+n+' ばん';
 }
 function fail(msg){
@@ -40,7 +42,8 @@ async function go(){
   try{
     const r=await fetch(API+'?a=take&cid='+encodeURIComponent(s.cid),{signal:ctl.signal,cache:'no-store'});
     const j=await r.json();
-    if(j.ok){s.n=j.n;s.round=j.round;save(s);show(j.n);return}
+    if(j.ok){const changed=s.n&&s.round&&s.round!==j.round&&s.n!==j.n;s.n=j.n;s.round=j.round;save(s);show(j.n);
+      if(changed)m.insertAdjacentHTML('afterbegin','<p class="err">番号が新しくなりました</p>');return}
     if(j.error==='full'){fail('番号がいっぱいになりました。<br>お近くの係の者にお声がけください。');return}
     if(!s.n) fail('混み合っています。<br>少し待って「もう一度」を押してください。');
   }catch(e){
@@ -48,4 +51,11 @@ async function go(){
   }finally{clearTimeout(t)}
 }
 go();
+// 15秒ごとに、0に戻されていないか確かめる（戻されていたら新しい番号を受け取る）
+async function watch(){
+  try{const s=load();if(s.n&&s.round){const r=await fetch(API+'?a=count&t='+Date.now(),{cache:'no-store'});const j=await r.json();
+    if(j.ok&&j.round&&j.round!==s.round)await go();}}catch(e){}
+  setTimeout(watch,15000);
+}
+setTimeout(watch,15000);
 </script></body></html>

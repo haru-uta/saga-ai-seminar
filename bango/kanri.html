@@ -27,16 +27,19 @@ body{font-family:"BIZ UDPGothic","Yu Gothic UI",sans-serif;background:linear-gra
 <script>
 const API="https://script.google.com/macros/s/AKfycbxJhpMJG1srTCm4jzV-jy6cMCMEJ4tZyrmvVqI5tx8w3bXsp__wLmSo9IblYWJdK1uW/exec";
 const KK="saga_bango_admin";
-let key=""; try{key=localStorage.getItem(KK)||""}catch(e){}
+// 合言葉は覚えない（本番のスクリーンでは0に戻すボタンを出さない）。準備のときだけ #k=… 付きで開く
+let key=""; try{localStorage.removeItem(KK)}catch(e){}
 const h=new URLSearchParams(location.hash.slice(1)).get('k');
-if(h){key=h;try{localStorage.setItem(KK,h)}catch(e){}; history.replaceState(null,'',location.pathname)}
+if(h){key=h; history.replaceState(null,'',location.pathname)}
 const $=id=>document.getElementById(id);
-$('keyst').textContent=key?'':'（合言葉なし：0に戻せません）';
+if(!key)document.querySelector('.tools').hidden=true;
 let fails=0;
 async function tick(){
   try{
-    const r=await fetch(API+'?a=count&t='+Date.now(),{cache:'no-store'}); const j=await r.json();
-    if(j.ok){$('c').textContent=j.count;if(fails>=2)$('st').textContent='';fails=0}
+    const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),10000);
+    const r=await fetch(API+'?a=count&t='+Date.now(),{cache:'no-store',signal:ctl.signal}); clearTimeout(t); const j=await r.json();
+    if(!j.ok) throw new Error('ng');
+    $('c').textContent=j.count;if(fails>=2)$('st').textContent='';fails=0;
   }catch(e){ if(++fails>=2) $('st').textContent='つながりにくいようです（数が止まっていることがあります）'; }
   setTimeout(tick,3000);
 }
