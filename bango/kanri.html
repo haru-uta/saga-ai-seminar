@@ -36,7 +36,7 @@ let fails=0;
 async function tick(){
   try{
     const r=await fetch(API+'?a=count&t='+Date.now(),{cache:'no-store'}); const j=await r.json();
-    if(j.ok){$('c').textContent=j.count;fails=0;$('st').textContent=''}
+    if(j.ok){$('c').textContent=j.count;if(fails>=2)$('st').textContent='';fails=0}
   }catch(e){ if(++fails>=2) $('st').textContent='つながりにくいようです（数が止まっていることがあります）'; }
   setTimeout(tick,3000);
 }
