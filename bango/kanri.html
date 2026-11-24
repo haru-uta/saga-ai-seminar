@@ -3,26 +3,101 @@
 <meta name="robots" content="noindex">
 <title>番号くばり（スクリーン用）</title>
 <style>
+/* 画面の高さを100としたものさし（--u）。16:9 でも 4:3 でも同じ形のまま大きさだけ変わる */
+:root{--u:min(1vh,.6vw);--o:#e8650a;--od:#c24f00;--band:#cf5300;--ink:#4a2a10;--soft:#7a5230;--warn:#8a2a00}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%}
-body{font-family:"BIZ UDPGothic","Yu Gothic UI",sans-serif;background:linear-gradient(#fff6ea,#ffe2bf);color:#4a2a10;display:flex;align-items:center;justify-content:center;gap:5vw;padding:3vh 4vw}
-.qrbox{text-align:center}
-.qrbox img{width:min(62vh,44vw);height:auto;image-rendering:pixelated;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
-.qrbox p{font-size:min(4.2vh,3vw);font-weight:bold;margin:2vh 0 0}
-.side{text-align:center}
-.side h1{font-size:min(6vh,4.2vw);margin:0 0 2vh}
-.count{font-size:min(30vh,20vw);font-weight:bold;line-height:1;color:#c24f00}
-.count small{font-size:.28em;margin-left:.1em}
-.hint{font-size:min(3.4vh,2.4vw);margin-top:3vh;line-height:1.6}
-.st{font-size:14px;color:#8a6a50;margin-top:2vh;min-height:1.4em}
-.tools{position:fixed;right:12px;bottom:10px;font-size:13px;opacity:.35}
-.tools:hover{opacity:1}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+  background:
+    radial-gradient(calc(var(--u)*90) calc(var(--u)*70) at 78% 30%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%),
+    radial-gradient(calc(var(--u)*80) calc(var(--u)*60) at 0% 100%,rgba(255,186,112,.5),rgba(255,186,112,0) 70%),
+    linear-gradient(#fff6ea,#ffe2bf);
+  color:var(--ink);display:flex;align-items:center;justify-content:center}
+.stage{width:calc(var(--u)*160);height:calc(var(--u)*100);padding:calc(var(--u)*5) 0;
+  display:grid;grid-template-columns:calc(var(--u)*62) 1fr;column-gap:calc(var(--u)*8)}
+
+/* 左：読み取るところ */
+.qrbox{display:flex;flex-direction:column;align-items:stretch;text-align:center;min-height:0}
+.qrbox h2{margin:0 0 calc(var(--u)*2.2);font-size:calc(var(--u)*4.5);line-height:1.25;letter-spacing:.02em;white-space:nowrap}
+.qr{background:#fff;border-radius:calc(var(--u)*3);padding:calc(var(--u)*1.2);line-height:0;
+  box-shadow:0 0 0 calc(var(--u)*.35) var(--o),0 calc(var(--u)*1.6) calc(var(--u)*4.5) rgba(170,80,0,.22)}
+/* QR はくっきり四角のまま大きくする（ぼかさない・上に何も重ねない） */
+.qr img{display:block;width:100%;height:auto;aspect-ratio:1;image-rendering:crisp-edges;image-rendering:pixelated;background:#fff}
+.steps{list-style:none;display:flex;justify-content:space-between;margin:calc(var(--u)*2.6) 0 0;padding:0}
+.steps li{display:flex;align-items:center;gap:calc(var(--u)*.8);font-size:calc(var(--u)*2.35);font-weight:bold;white-space:nowrap}
+.steps b{flex:none;display:grid;place-items:center;width:calc(var(--u)*3.7);height:calc(var(--u)*3.7);border-radius:50%;
+  background:var(--band);color:#fff;font-size:calc(var(--u)*2.3);line-height:1}
+.url{margin:calc(var(--u)*2.2) 0 0;padding:calc(var(--u)*1) calc(var(--u)*1.2) calc(var(--u)*1.1);border-radius:calc(var(--u)*1.6);
+  background:rgba(255,255,255,.75);border:calc(var(--u)*.15) solid rgba(194,79,0,.3);line-height:1.35}
+.url .lbl{display:block;font-size:calc(var(--u)*1.75);color:var(--soft)}
+.url .adr{display:block;font-family:Consolas,"BIZ UDGothic","Osaka-Mono","MS Gothic",monospace;font-size:calc(var(--u)*2.45);font-weight:bold;
+  letter-spacing:.01em;white-space:nowrap;color:var(--ink)}
+
+/* 右：人数 */
+.side{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;min-height:0}
+.side h1{margin:0;font-size:calc(var(--u)*4.5);line-height:1.25;letter-spacing:.04em}
+.count{position:relative;display:inline-block;margin-top:calc(var(--u)*.5);font-size:calc(var(--u)*31);font-weight:bold;line-height:1;color:var(--od);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;white-space:nowrap}
+.count #c{display:inline-block;transform-origin:50% 70%}
+.count small{font-size:.24em;margin-left:.12em;letter-spacing:0;color:var(--ink)}
+.count.idle #c{font-size:.5em;opacity:.3}
+.count.pop #c{animation:pop .7s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pop{0%{transform:scale(1)}28%{transform:scale(1.2) translateY(-3%)}55%{transform:scale(.95)}78%{transform:scale(1.03)}100%{transform:scale(1)}}
+.ring{position:absolute;left:43%;top:50%;width:.9em;height:.9em;margin:-.45em 0 0 -.45em;border-radius:50%;
+  border:calc(var(--u)*.6) solid rgba(232,101,10,.5);opacity:0;pointer-events:none}
+.count.pop .ring{animation:ring .9s ease-out}
+@keyframes ring{0%{opacity:.9;transform:scale(.55)}100%{opacity:0;transform:scale(1.5)}}
+.plus{position:absolute;right:calc(var(--u)*-9);top:calc(var(--u)*1);padding:calc(var(--u)*.7) calc(var(--u)*1.8);border-radius:calc(var(--u)*4);
+  background:var(--band);color:#fff;font-size:calc(var(--u)*4);line-height:1.2;letter-spacing:0;opacity:0;pointer-events:none;
+  box-shadow:0 calc(var(--u)*.6) calc(var(--u)*1.6) rgba(170,80,0,.3)}
+.plus.go{animation:plus 1.5s ease-out}
+@keyframes plus{0%{opacity:0;transform:translateY(60%) scale(.6)}18%{opacity:1;transform:translateY(0) scale(1.08)}30%{transform:translateY(0) scale(1)}
+  75%{opacity:1;transform:translateY(-15%)}100%{opacity:0;transform:translateY(-45%)}}
+
+/* 席の丸（1つが1人。誰が何番かは出さない） */
+.seats{flex:1;min-height:0;align-self:stretch;display:flex;flex-direction:column;margin-top:calc(var(--u)*1.5);
+  padding:calc(var(--u)*1.6) calc(var(--u)*3) calc(var(--u)*2);border-radius:calc(var(--u)*3.5);
+  background:rgba(255,255,255,.7);border:calc(var(--u)*.2) solid rgba(232,101,10,.25);
+  box-shadow:0 calc(var(--u)*1) calc(var(--u)*3) rgba(170,80,0,.08)}
+.cap{margin:0 0 calc(var(--u)*.6);font-size:calc(var(--u)*2.1);color:var(--soft);display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*.8)}
+.cap::before{content:"";width:calc(var(--u)*1.9);height:calc(var(--u)*1.9);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffb45e,#e8650a 62%,#c94f00)}
+.seatbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#dots{display:grid;--cell:20px;grid-auto-rows:var(--cell)}
+#dots i{position:relative;width:var(--cell);height:var(--cell)}
+#dots i::before{content:"";position:absolute;inset:15%;border-radius:50%;background:#f6e4cd;box-shadow:inset 0 0 0 calc(var(--cell)*.045) #e2c29c;
+  transition:background-color .3s}
+#dots i.on::before{background:radial-gradient(circle at 35% 30%,#ffb45e,#e8650a 62%,#c94f00);
+  box-shadow:0 0 calc(var(--cell)*.22) rgba(232,101,10,.5);animation:light .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes light{0%{transform:scale(.2)}55%{transform:scale(1.28)}100%{transform:scale(1)}}
+#dots i.on::after{content:"";position:absolute;inset:15%;border-radius:50%;border:calc(var(--cell)*.06) solid rgba(232,101,10,.6);opacity:0;
+  animation:ripple .9s ease-out}
+@keyframes ripple{0%{opacity:.9;transform:scale(.8)}100%{opacity:0;transform:scale(2.2)}}
+#dots i.last::before{box-shadow:0 0 0 calc(var(--cell)*.07) #fff,0 0 0 calc(var(--cell)*.13) var(--o),0 0 calc(var(--cell)*.3) rgba(232,101,10,.6)}
+
+.hint{margin:calc(var(--u)*2.2) 0 0;font-size:calc(var(--u)*3.1);line-height:1.4;font-weight:bold;white-space:nowrap}
+.hint em{font-style:normal;color:var(--od)}
+.st{position:fixed;left:50%;top:calc(var(--u)*.5);transform:translateX(-50%);margin:0;padding:.2em 1.2em;line-height:1.35;border-radius:2em;white-space:nowrap;
+  font-size:max(16px,calc(var(--u)*3));font-weight:bold;color:var(--warn);background:#fff;border:2px solid var(--warn);z-index:3}
+.st:empty{display:none}
+.tools{position:fixed;right:12px;bottom:10px;font-size:13px;opacity:.35;z-index:4}
+.tools:hover,.tools:focus-within{opacity:1}
 .tools button{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #b08060;background:#fff;color:#6a3a10;cursor:pointer}
 .tools .danger{background:#c0392b;color:#fff;border-color:#c0392b}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.plus{display:none}}
 </style></head><body>
-<div class="qrbox"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZoAAAGaAQAAAAAefbjOAAADL0lEQVR4nO1cS46jMBB9BqQsjZQD5CjOzUZ9pL4BHKVvAMtIRDWqj4HWLEZM0NDE9Ra0MSkB5dKrD+UOhM3oq+0ygAsZXBEGV4TBFWFwRRhcEQZXxJkUEQwNgJEPPHfHU2eBMf/gfsjjbYQL7aCIRIwBK2MAxgtRF4ljz1qu5yjUVf7Gimjs79gC6RMIiI9AfErAJJTBR76AejrHO1UutK8iagr3KMYQAtLwzL5i/zv9HS50GEcsGINSRkgdMWVMDWFcXfd1KsMiIscIuvD1hL4VD/FsqL9fKLA7ofO8U+VCryuil0yi5RhzAMIvPtzHC8mIbSNnHS/faRtc6CCOoGWivz3ywsdHQN9yTCkM8uKdKhc6hSKgWWVSKrAkkzoedXEC0VD/efWHv1PlQjsoIk5clBBS4OQiTuw1mlyZYMvptFDx8p02wYUO4ggSUhA+QJRTBo94biEK54j3N1iYJyD2ECREwRahZjEbiBYu3SJKiiMo1yPZf2g9m20DSXljypThcUQhFsEwjsgmoA5jDi/XDPLD36lyoT3iCGQTkDRDr7FtYD3nHFGQ1yB1HTmUxJojJKJg8nCLKMxrDJxkSh6aCxCaYehcthz3GqVkn+DYcfEVZhY50DSicIsoJvskI4q5XKkxpgaaDK9HlMURcU5BhSj0NNeqzIl4ZFlazbLTmRxAzuFlrkd49lnal66kuYaNMluY/8g04pFlKV+6iLQNu28B+miFMp7BQk7BGPj0mMfbBBfapavu2VB/mxqkgTsiIhDSV8O9EfzpU7zGAld5CV6jnpti5kqlJJ5LT75/1yhIiL6vvn7DwNwfocUppgzvjzjf4v6T1wh2Vk+E8WrbNxAHBB2NV3UbdIp3qlxon+8apI0x82iBcMT8Y69iF2F7Y97UKV3ZsoNHbYONgedyjfuYx9sEF9pVEYlrDx/tM9CHbAyWPkspRXz5TuAy93QJOKhMwxUhfV55B08A9Tc6yTtVLrTjni6ad/QRwK3ZN94YDN7vB9sT7Cp/a9vDuuIAiSxt3XNDHY81N7UE1SPLtxYK/p/JTrFOlQspXBEGV4TBFWFwRRhcEYb/p4jfFfSFgq1p5c8AAAAASUVORK5CYII=" alt="番号を受け取るQRコード"><p>スマホのカメラで読んでください</p></div>
-<div class="side"><h1>番号を配った人数</h1><div class="count"><span id="c">–</span><small>人</small></div>
-<p class="hint">くじの「参加人数」に<br>この数を入れます</p><p class="st" id="st"></p></div>
+<div class="stage">
+<div class="qrbox">
+  <h2>カメラで読み取ってください</h2>
+  <div class="qr"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZoAAAGaAQAAAAAefbjOAAADL0lEQVR4nO1cS46jMBB9BqQsjZQD5CjOzUZ9pL4BHKVvAMtIRDWqj4HWLEZM0NDE9Ra0MSkB5dKrD+UOhM3oq+0ygAsZXBEGV4TBFWFwRRhcEQZXxJkUEQwNgJEPPHfHU2eBMf/gfsjjbYQL7aCIRIwBK2MAxgtRF4ljz1qu5yjUVf7Gimjs79gC6RMIiI9AfErAJJTBR76AejrHO1UutK8iagr3KMYQAtLwzL5i/zv9HS50GEcsGINSRkgdMWVMDWFcXfd1KsMiIscIuvD1hL4VD/FsqL9fKLA7ofO8U+VCryuil0yi5RhzAMIvPtzHC8mIbSNnHS/faRtc6CCOoGWivz3ywsdHQN9yTCkM8uKdKhc6hSKgWWVSKrAkkzoedXEC0VD/efWHv1PlQjsoIk5clBBS4OQiTuw1mlyZYMvptFDx8p02wYUO4ggSUhA+QJRTBo94biEK54j3N1iYJyD2ECREwRahZjEbiBYu3SJKiiMo1yPZf2g9m20DSXljypThcUQhFsEwjsgmoA5jDi/XDPLD36lyoT3iCGQTkDRDr7FtYD3nHFGQ1yB1HTmUxJojJKJg8nCLKMxrDJxkSh6aCxCaYehcthz3GqVkn+DYcfEVZhY50DSicIsoJvskI4q5XKkxpgaaDK9HlMURcU5BhSj0NNeqzIl4ZFlazbLTmRxAzuFlrkd49lnal66kuYaNMluY/8g04pFlKV+6iLQNu28B+miFMp7BQk7BGPj0mMfbBBfapavu2VB/mxqkgTsiIhDSV8O9EfzpU7zGAld5CV6jnpti5kqlJJ5LT75/1yhIiL6vvn7DwNwfocUppgzvjzjf4v6T1wh2Vk+E8WrbNxAHBB2NV3UbdIp3qlxon+8apI0x82iBcMT8Y69iF2F7Y97UKV3ZsoNHbYONgedyjfuYx9sEF9pVEYlrDx/tM9CHbAyWPkspRXz5TuAy93QJOKhMwxUhfV55B08A9Tc6yTtVLrTjni6ad/QRwK3ZN94YDN7vB9sT7Cp/a9vDuuIAiSxt3XNDHY81N7UE1SPLtxYK/p/JTrFOlQspXBEGV4TBFWFwRRhcEYb/p4jfFfSFgq1p5c8AAAAASUVORK5CYII=" alt="番号を受け取るQRコード"></div>
+  <ol class="steps"><li><b>1</b>カメラを開く</li><li><b>2</b>四角にかざす</li><li><b>3</b>出た案内を押す</li></ol>
+  <p class="url"><span class="lbl">読み取れないときは、この文字を打ちこんでも開けます</span><span class="adr" id="adr">https://haru-uta.github.io/saga-ai-seminar/bango/</span></p>
+</div>
+<div class="side"><h1>番号を配った人数</h1>
+  <div class="count idle"><span class="ring" aria-hidden="true"></span><span id="c">–</span><small>人</small><span class="plus" id="plus" aria-hidden="true"></span></div>
+  <div class="seats" aria-hidden="true"><p class="cap">丸ひとつが、ひとり</p><div class="seatbox"><div id="dots"></div></div></div>
+  <p class="hint">この数を、くじの<em>「参加人数」</em>に入れます</p>
+  <p class="st" id="st"></p></div>
+</div>
 <div class="tools"><span id="keyst"></span> <button id="rs">0に戻す</button> <button id="ok" class="danger" hidden>本当に0に戻す</button></div>
 <script>
 const API="https://script.google.com/macros/s/AKfycbxJhpMJG1srTCm4jzV-jy6cMCMEJ4tZyrmvVqI5tx8w3bXsp__wLmSo9IblYWJdK1uW/exec";
@@ -40,7 +115,7 @@ async function tick(){
     const r=await fetch(API+'?a=count&t='+Date.now(),{cache:'no-store',signal:ctl.signal}); clearTimeout(t); const j=await r.json();
     if(!j.ok) throw new Error('ng');
     $('c').textContent=j.count;if(fails>=2)$('st').textContent='';fails=0;
-  }catch(e){ if(++fails>=2) $('st').textContent='つながりにくいようです（数が止まっていることがあります）'; }
+  }catch(e){ if(++fails>=2) $('st').textContent='つながりにくいようです。数が止まっているかもしれません'; }
   setTimeout(tick,3000);
 }
 tick();
@@ -50,4 +125,53 @@ $('rs').onclick=()=>{ if(!key){$('st').textContent='合言葉がないので0に
 $('ok').onclick=async()=>{ $('ok').hidden=true;
   try{ const r=await fetch(API+'?a=reset&key='+encodeURIComponent(key),{cache:'no-store'}); const j=await r.json();
     $('st').textContent=j.ok?'0に戻しました':'0に戻せませんでした（'+j.error+'）'; }catch(e){$('st').textContent='0に戻せませんでした（通信）'} };
+
+/* ── ここから下は見た目だけ（通信には触らない。#c の数字が変わったのを見て動かす） ── */
+(function(){
+  const adr=$('adr'); adr.textContent=adr.textContent.replace(/^https?:\/\//,'');
+  const c=$('c'), dots=$('dots'), box=dots.parentNode, cnt=c.parentNode, plus=$('plus');
+  const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const MAXD=200;                       // 丸は200個まで（それより多い人数は数字だけが増える）
+  let cap=0, shown=0, target=0, prev=null, timer=null, gap=120;
+  function layout(){
+    const W=box.clientWidth, H=box.clientHeight; if(!W||!H||!cap) return;
+    let best=0, cols=10;
+    [10,15,20,25].forEach(k=>{const s=Math.min(W/k,H/Math.ceil(cap/k)); if(s>best+.01){best=s;cols=k}});
+    dots.style.setProperty('--cell',Math.floor(best*100)/100+'px');
+    dots.style.gridTemplateColumns='repeat('+cols+',var(--cell))';
+  }
+  function ensure(n){
+    const need=Math.min(MAXD,Math.max(30,Math.ceil(n/10)*10)); if(need===cap) return;
+    while(dots.children.length<need) dots.appendChild(document.createElement('i'));
+    while(dots.children.length>need) dots.removeChild(dots.lastChild);
+    cap=need; layout();
+  }
+  function mark(){ const o=dots.querySelector('.last'); if(o)o.classList.remove('last'); if(shown>0)dots.children[shown-1].classList.add('last'); }
+  function step(){
+    timer=null; if(shown>=target){mark();return}
+    dots.children[shown].classList.add('on'); shown++; mark();
+    if(shown<target) timer=setTimeout(step,gap);
+  }
+  function again(el,cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  function update(){
+    const n=parseInt(c.textContent,10); if(isNaN(n)||n===prev) return;
+    const was=prev; prev=n; cnt.classList.remove('idle'); ensure(n); target=Math.min(n,MAXD);
+    if(shown>target){                    // 0に戻したとき：丸を消す
+      clearTimeout(timer); timer=null;
+      for(let i=target;i<dots.children.length;i++) dots.children[i].className='';
+      shown=target; mark();
+    }
+    const add=target-shown;
+    if(add>0){
+      if(calm){ while(shown<target){dots.children[shown].classList.add('on');shown++} mark(); }
+      else{ gap=Math.max(25,Math.min(170,900/add)); if(!timer) step(); }
+    }
+    if(was!==null&&n>was){ again(cnt,'pop'); plus.textContent='＋'+(n-was); again(plus,'go'); }
+    else if(was===null&&n>0) again(cnt,'pop');
+  }
+  ensure(0);
+  new MutationObserver(update).observe(c,{childList:true,characterData:true,subtree:true});
+  addEventListener('resize',layout);
+  update();
+})();
 </script></body></html>

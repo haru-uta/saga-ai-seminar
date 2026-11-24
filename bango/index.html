@@ -1,22 +1,102 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>あなたの番号</title>
+<meta name="theme-color" content="#fff6ea">
+<title>あなたの番号｜バックオフィス業務効率化セミナー</title>
 <style>
+:root{--o:#e8650a;--od:#c24f00;--band:#cf5300;--ink:#4a2a10;--soft:#7a5230;--warn:#8a2a00}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;background:linear-gradient(#fff6ea,#ffe2bf);color:#4a2a10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
-.lead{font-size:22px;font-weight:bold;margin:0 0 8px}
-.card{background:#fff;border:5px solid #e8650a;border-radius:28px;padding:18px 36px 10px;min-width:260px;box-shadow:0 8px 24px rgba(200,90,0,.18)}
-.num{font-size:150px;font-weight:bold;line-height:1.05;color:#c24f00;letter-spacing:-2px}
-.num small{font-size:44px;margin-left:4px}
-.note{font-size:19px;line-height:1.7;margin-top:22px}
-.err{font-size:20px;line-height:1.7;color:#8a2a00}
-button{font:inherit;font-size:22px;font-weight:bold;margin-top:16px;padding:14px 34px;border:0;border-radius:40px;background:#e8650a;color:#fff}
-.wait{font-size:26px}
-.dots::after{content:"";animation:d 1.2s infinite}
-@keyframes d{0%{content:""}33%{content:"・"}66%{content:"・・"}100%{content:"・・・"}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;overflow-x:clip}
+body{margin:0;min-height:100vh;min-height:100dvh;
+  font-family:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+  background:
+    radial-gradient(90% 46% at 50% 0%,rgba(255,255,255,.9),rgba(255,255,255,0) 70%),
+    radial-gradient(70% 40% at 100% 100%,rgba(255,190,120,.45),rgba(255,190,120,0) 70%),
+    linear-gradient(#fff6ea,#ffe4c4);
+  background-attachment:fixed;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:max(24px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom))}
+body{overflow-x:hidden;overflow-x:clip}
+main{width:100%;max-width:400px;position:relative}
+.k{display:inline-block}
+
+/* 番号札 */
+.card{position:relative;background:#fff;border:3px solid var(--o);border-radius:30px;overflow:hidden;
+  box-shadow:0 2px 0 rgba(255,255,255,.9) inset,0 16px 36px rgba(190,84,0,.22),0 3px 8px rgba(190,84,0,.12)}
+.lead{margin:0;padding:13px 12px 12px;background:var(--band);color:#fff;font-size:22px;font-weight:bold;letter-spacing:.06em;line-height:1.3}
+.num{font-size:clamp(120px,46vw,190px);font-weight:bold;line-height:1;color:var(--od);padding:22px 8px 26px;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.num.l2{font-size:clamp(110px,40vw,170px)}
+.num.l3{font-size:clamp(84px,30vw,128px);padding:34px 8px 38px}
+.num small{font-size:.27em;margin-left:.1em;letter-spacing:0;font-weight:bold}
+.num .v{display:inline-block}
+
+/* 札の下の説明 */
+.notes{list-style:none;margin:22px 0 0;padding:6px 18px;text-align:left;
+  background:rgba(255,255,255,.72);border:1px solid rgba(232,101,10,.22);border-radius:22px}
+.notes li{position:relative;padding:13px 0 13px 34px;font-size:19px;line-height:1.6}
+.notes li+li{border-top:1px dashed rgba(194,79,0,.28)}
+.notes li::before{content:"";position:absolute;left:2px;top:19px;width:20px;height:20px;border-radius:50%;background:var(--o)}
+.notes li::after{content:"";position:absolute;left:9px;top:23px;width:6px;height:10px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(42deg)}
+.notes li.keep{font-weight:bold;color:var(--warn);font-size:20px}
+.notes li.keep::before{background:var(--warn)}
+.notes li.keep::after{left:10.5px;top:23px;width:3px;height:12px;border:0;transform:none;
+  background:linear-gradient(#fff 0 58%,transparent 58% 76%,#fff 76%)}
+
+/* お知らせ（番号が新しくなりました） */
+.notice{display:inline-block;margin:0 0 14px;padding:9px 20px;border-radius:40px;background:#fff;border:2px solid var(--warn);
+  color:var(--warn);font-size:19px;font-weight:bold;line-height:1.4}
+
+/* 待ち */
+.card.ghost{border-style:dashed;border-color:rgba(232,101,10,.75);box-shadow:0 10px 26px rgba(190,84,0,.12)}
+.card.ghost .lead{background:#fff1dd;color:var(--ink);font-size:21px;letter-spacing:.02em}
+.dots3{display:flex;justify-content:center;align-items:center;gap:16px;height:170px}
+.dots3 i{width:20px;height:20px;border-radius:50%;background:var(--o);animation:hop 1.2s ease-in-out infinite}
+.dots3 i:nth-child(2){animation-delay:.15s}
+.dots3 i:nth-child(3){animation-delay:.3s}
+@keyframes hop{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-16px);opacity:1}}
+.sub{margin:18px 0 0;font-size:18px;color:var(--soft);line-height:1.6}
+
+/* うまくいかなかったとき */
+.card.errc{border-color:#d9a070;padding:26px 20px 28px}
+.ico{width:60px;height:60px;margin:0 auto 14px;border-radius:50%;background:#fff1dd;border:3px solid var(--o);position:relative}
+.ico::before{content:"";position:absolute;left:50%;top:12px;width:6px;height:21px;margin-left:-3px;border-radius:3px;background:var(--od)}
+.ico::after{content:"";position:absolute;left:50%;top:38px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--od)}
+.card .err{margin:0;font-size:20px;line-height:1.7;color:var(--warn)}
+button{font:inherit;font-size:22px;font-weight:bold;margin-top:20px;padding:15px 44px;min-height:60px;border:0;border-radius:40px;
+  background:var(--band);color:#fff;box-shadow:0 6px 0 #9c3e00,0 12px 20px rgba(190,84,0,.25);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:active{transform:translateY(4px);box-shadow:0 2px 0 #9c3e00,0 5px 10px rgba(190,84,0,.25)}
+button:focus-visible{outline:4px solid #ffd19c;outline-offset:3px}
+
+/* 番号が出る瞬間 */
+.in-full .card{animation:cardIn .55s cubic-bezier(.2,1.25,.4,1) both}
+.in-full .num .v{animation:numIn .7s cubic-bezier(.2,1.5,.4,1) .12s both}
+.in-full .num small{display:inline-block;animation:fade .4s ease .5s both}
+.in-full .notes{animation:rise .5s ease .55s both}
+.in-soft .card{animation:fade .35s ease both}
+.in-soft .notes{animation:fade .35s ease .1s both}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes numIn{0%{opacity:0;transform:scale(.35)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.halo{position:absolute;left:50%;top:150px;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;
+  border:3px solid rgba(232,101,10,.55);opacity:0;pointer-events:none}
+.in-full .halo{animation:halo .9s ease-out .2s both}
+@keyframes halo{0%{opacity:.9;transform:scale(.5)}100%{opacity:0;transform:scale(2.3)}}
+.burst{position:absolute;left:50%;top:150px;width:0;height:0;pointer-events:none;z-index:2}
+.burst i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:3px;background:var(--c);opacity:0}
+.burst i:nth-child(3n){border-radius:50%}
+.in-full .burst i{animation:fly 1s cubic-bezier(.15,.7,.3,1) .22s both}
+@keyframes fly{0%{opacity:0;transform:translate(0,0) rotate(0) scale(.4)}12%{opacity:1}
+  70%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .dots3 i{opacity:.7}
+  .halo,.burst{display:none}
+}
+@media (max-height:600px){.notes li{padding-top:9px;padding-bottom:9px}.notes li::before{top:15px}.notes li::after{top:19px}.notes{margin-top:14px}}
 </style></head><body>
-<main id="m" aria-live="polite"><p class="wait">番号をお配りしています<span class="dots"></span></p></main>
+<p class="sub" style="margin:0 0 14px">バックオフィス業務効率化セミナー 2026.12.11</p><main id="m" aria-live="polite"><div class="card ghost"><p class="lead wait">番号をお配りしています</p><div class="dots3" aria-hidden="true"><i></i><i></i><i></i></div></div><p class="sub">少しだけお待ちください</p></main>
 <script>
 const API="https://script.google.com/macros/s/AKfycbxJhpMJG1srTCm4jzV-jy6cMCMEJ4tZyrmvVqI5tx8w3bXsp__wLmSo9IblYWJdK1uW/exec";
 const KEY="saga_bango_v1";
@@ -26,28 +106,49 @@ try{localStorage.setItem(KEY+'_t','1');localStorage.removeItem(KEY+'_t')}catch(e
 function load(){if(!canSave)return mem;try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return mem}}
 function save(o){mem=o;if(!canSave)return;try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){canSave=false}}
 function newCid(){const a=new Uint8Array(18);(crypto||msCrypto).getRandomValues(a);return Array.from(a,b=>"abcdefghijklmnopqrstuvwxyz0123456789"[b%36]).join('')}
+
+/* ── ここから見た目だけ ── */
+// 文の切れ目でだけ折り返す（1文字だけ次の行に落ちないように）。「|」が切れ目
+const K=s=>s.split('<br>').map(l=>l.split('|').map(x=>'<span class="k">'+x+'</span>').join('')).join('<br>');
+const WAIT='<div class="card ghost"><p class="lead wait">番号をお配りしています</p><div class="dots3" aria-hidden="true"><i></i><i></i><i></i></div></div><p class="sub">少しだけお待ちください</p>';
+const hadNumber=!!load().n;   // 前に受け取った番号を出し直すだけのときは、演出を控えめにする
+let lastShown=null;
+const BITS=[[-150,-96,-200,'#e8650a'],[-104,-150,160,'#ffb347'],[-52,-176,-120,'#f6c453'],[0,-190,220,'#e8650a'],[52,-176,140,'#ff8f6b'],
+  [104,-150,-180,'#ffb347'],[150,-96,200,'#f6c453'],[-168,-20,120,'#ff8f6b'],[168,-20,-140,'#e8650a'],[-126,60,-90,'#f6c453'],[126,60,110,'#ffb347'],[0,-120,90,'#ff8f6b']];
+function burst(){return '<div class="halo" aria-hidden="true"></div><div class="burst" aria-hidden="true">'
+  +BITS.map(b=>'<i style="--x:'+b[0]+'px;--y:'+b[1]+'px;--r:'+b[2]+'deg;--c:'+b[3]+'"></i>').join('')+'</div>'}
+/* ── ここまで ── */
+
 function show(n){
-  m.innerHTML='<p class="lead">あなたの番号は</p><div class="card"><div class="num">'+n+'<small>ばん</small></div></div>'
-   +(canSave?'':'<p class="note" style="color:#8a2a00;font-weight:bold">この画面を閉じないでください</p>')+'<p class="note">このあと、この番号で<br>くじを引きます。<br>画面は閉じても大丈夫です。<br>当たっても、前に出たり<br>話したりはしません。</p>';
+  const mode=lastShown===n?'':(lastShown===null&&hadNumber?'in-soft':'in-full'); lastShown=n;
+  m.className=mode;
+  m.innerHTML=(mode==='in-full'?burst():'')
+   +'<div class="card"><p class="lead">あなたの番号は</p><div class="num l'+String(n).length+'"><span class="v">'+n+'</span><small>ばん</small></div></div>'
+   +'<ul class="notes">'
+   +'<li>'+K('このあと、|この番号で|くじを引きます。')+'</li>'
+   +(canSave?'<li>'+K('画面は閉じても|大丈夫です。')+'</li>':'<li class="keep">'+K('この画面を|閉じないでください')+'</li>')
+   +'<li>'+K('当たっても、|前に出たり|話したりは|しません。')+'</li>'
+   +'</ul>';
   document.title='あなたは '+n+' ばん';
 }
 function fail(msg){
-  m.innerHTML='<p class="err">'+msg+'</p><button id="r">もう一度</button>';
+  lastShown=null; m.className='in-soft';
+  m.innerHTML='<div class="card errc"><div class="ico" aria-hidden="true"></div><p class="err">'+msg+'</p><button id="r">もう一度</button></div>';
   document.getElementById('r').onclick=go;
 }
 async function go(){
   const s=load(); if(!s.cid){s.cid=newCid();save(s)}
-  if(s.n) show(s.n); else m.innerHTML='<p class="wait">番号をお配りしています<span class="dots"></span></p>';
+  if(s.n) show(s.n); else {m.className='';m.innerHTML=WAIT}
   const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),20000);
   try{
     const r=await fetch(API+'?a=take&cid='+encodeURIComponent(s.cid),{signal:ctl.signal,cache:'no-store'});
     const j=await r.json();
     if(j.ok){const changed=s.n&&s.round&&s.round!==j.round&&s.n!==j.n;s.n=j.n;s.round=j.round;save(s);show(j.n);
-      if(changed)m.insertAdjacentHTML('afterbegin','<p class="err">番号が新しくなりました</p>');return}
-    if(j.error==='full'){fail('番号がいっぱいになりました。<br>お近くの係の者にお声がけください。');return}
-    if(!s.n) fail('混み合っています。<br>少し待って「もう一度」を押してください。');
+      if(changed)m.insertAdjacentHTML('afterbegin','<p class="err notice">番号が新しくなりました</p>');return}
+    if(j.error==='full'){fail(K('番号が|いっぱいになりました。<br>お近くの係の者に|お声がけください。'));return}
+    if(!s.n) fail(K('混み合っています。<br>少し待って|「もう一度」を|押してください。'));
   }catch(e){
-    if(!s.n) fail('つながりにくいようです。<br>少し待って「もう一度」を押してください。<br>だめなときは、係の者が紙の番号をお渡しします。');
+    if(!s.n) fail(K('つながりにくいようです。<br>少し待って|「もう一度」を|押してください。<br>だめなときは、|係の者が|紙の番号を|お渡しします。'));
   }finally{clearTimeout(t)}
 }
 go();
