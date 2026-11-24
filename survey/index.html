@@ -150,7 +150,7 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
     <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="#2a6bff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/><path d="M3 3l18 18"/></svg><b>匿名でOK</b><small>名前は空欄で可</small></div>
     <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="#2a6bff" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg><b>ログイン不要</b><small>このまま回答</small></div>
   </div>
-  <p class="lead">全11問です。<b>必須は2問だけ</b>で、ほかは答えられるものだけで大丈夫です。いただいた回答は、主催の株式会社コネクトライと登壇者で共有し、今後のセミナーづくりのためだけに使います。</p>
+  <p class="lead">全10問です。<b>必須は2問だけ</b>で、ほかは答えられるものだけで大丈夫です。いただいた回答は、主催の株式会社コネクトライと登壇者で共有し、今後のセミナーづくりのためだけに使います。</p>
 </div>
 
 <div class="prog" aria-hidden="true"><div class="wrap"><div class="bar"><i id="bar"></i></div><div class="n"><span id="cnt">0</span><small>問 回答</small></div><div class="req" id="req">必須 0/2</div></div></div>
@@ -229,14 +229,6 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
     <div class="field"><input class="txt" type="text" name="name" maxlength="200" aria-label="お名前" autocomplete="name"></div>
   </fieldset>
 
-  <fieldset class="q" data-q="email">
-    <legend><span class="no">11</span><span>次回のセミナーのご案内<span class="tag free">希望者のみ</span></span></legend>
-    <p class="hint">ご案内を希望する方だけ、メールアドレスをご記入ください。</p>
-    <div class="field"><input class="txt" type="email" name="email" maxlength="200" inputmode="email" autocomplete="email" placeholder="name@example.com" aria-label="メールアドレス"></div>
-    <div class="privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#56627a" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><span>いただいたアドレスは、セミナーのご案内にだけ使います。</span></div>
-    <p class="err">メールアドレスの形でご記入ください（例: name@example.com）。空欄でも送れます。</p>
-  </fieldset>
-
   <div class="fail" id="fail" role="alert"></div>
   <button class="send inline" type="submit"><span class="spin" aria-hidden="true"></span><span class="lbl">回答を送信する</span></button>
   <footer>生成AI・クラウド会計・業務自動化<br>バックオフィス業務効率化セミナー</footer>
@@ -295,19 +287,18 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
   const val = name => { const i = f.querySelector(`input[name="${name}"]:checked`); return i ? i.value : ""; };
   const vals = name => $$(`input[name="${name}"]:checked`, f).map(i => i.value);
   const txt = name => (f.elements[name] ? f.elements[name].value.trim() : "");
-  const emailOk = v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-
+  
   const otherMissing = k => (k === "biz" ? val("biz") === "__other__" : vals(k).includes("__other__")) && !txt(k === "biz" ? "bizOther" : "topicOther");
   const answered = {
     biz: () => !!val("biz") && !otherMissing("biz"), sat: () => !!val("sat"), fee: () => !!val("fee"),
     days: () => vals("days").length > 0, times: () => vals("times").length > 0, lens: () => vals("lens").length > 0, topics: () => vals("topics").length > 0 && !otherMissing("topics"),
-    good: () => !!txt("good"), bad: () => !!txt("bad"), name: () => !!txt("name"), email: () => !!txt("email") && emailOk(txt("email"))
+    good: () => !!txt("good"), bad: () => !!txt("bad"), name: () => !!txt("name")
   };
 
   function refresh() {
     let n = 0;
-    $$(".q").forEach(q => { const k = q.dataset.q, ok = answered[k](); q.classList.toggle("done", ok); if (ok) { n++; if (k !== "email") q.classList.remove("bad"); } });
-    $("#cnt").textContent = n; $("#bar").style.width = (n / 11 * 100) + "%";
+    $$(".q").forEach(q => { const k = q.dataset.q, ok = answered[k](); q.classList.toggle("done", ok); if (ok) { n++; q.classList.remove("bad"); } });
+    $("#cnt").textContent = n; $("#bar").style.width = (n / 10 * 100) + "%";
     const req = (val("sat") ? 1 : 0) + (val("fee") ? 1 : 0), rq = $("#req");
     rq.textContent = req === 2 ? "必須 OK" : `必須 ${req}/2`; rq.classList.toggle("ok", req === 2);
     $$("[data-other-for]").forEach(o => {
@@ -315,9 +306,6 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
       o.classList.toggle("on", on);
     });
     $$("[data-count]").forEach(c => c.textContent = txt(c.dataset.count).length + " / 1000");
-    const em = $(".q[data-q=email]"), bad = !emailOk(txt("email"));
-    f.elements.email.classList.toggle("ng", bad && document.activeElement !== f.elements.email);
-    if (!bad) em.classList.remove("bad");
   }
 
   // 書きかけを端末に残す（電波が途切れて閉じても、もう一度開けば戻る）
@@ -354,8 +342,7 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
   load(); refresh();
   f.addEventListener("input", () => { refresh(); save(); });
   f.addEventListener("change", () => { refresh(); save(); });
-  f.elements.email.addEventListener("blur", refresh);
-  const isText = el => el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && /^(text|email)$/.test(el.type)));
+  const isText = el => el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && /^text$/.test(el.type)));
   if (matchMedia("(pointer:coarse)").matches) {
     f.addEventListener("focusin", e => { if (isText(e.target)) document.body.classList.add("typing"); });
     f.addEventListener("focusout", () => setTimeout(() => { if (!isText(document.activeElement)) document.body.classList.remove("typing"); }, 50));
@@ -374,12 +361,11 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
     if (!val("sat")) bads.push([$(".q[data-q=sat]"), $('input[name=sat]')]);
     if (!val("fee")) bads.push([$(".q[data-q=fee]"), $('input[name=fee]')]);
     if (otherMissing("topics")) { const q = $(".q[data-q=topics]"); q.classList.add("need-other"); bads.push([q, f.elements.topicOther]); }
-    if (!emailOk(txt("email"))) bads.push([$(".q[data-q=email]"), f.elements.email]);
     if (bads.length) {
       bads.forEach(([q, i]) => { void q.offsetWidth; q.classList.add("bad"); if (i) i.setAttribute("aria-invalid", "true"); });
       const [q0, i0] = bads[0];
       q0.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (i0 && (i0.type === "text" || i0.type === "email")) setTimeout(() => i0.focus({ preventScroll: true }), 350);
+      if (i0 && i0.type === "text") setTimeout(() => i0.focus({ preventScroll: true }), 350);
       toast(bads.length === 1 ? "赤い枠の質問をご確認ください" : `赤い枠の質問（${bads.length}か所）をご確認ください`);
       return;
     }
@@ -387,7 +373,7 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
       biz: val("biz"), bizOther: txt("bizOther"), sat: Number(val("sat")), fee: val("fee"),
       days: vals("days"), times: vals("times"), lens: vals("lens"),
       topics: vals("topics").filter(v => v !== "__other__"), topicOther: vals("topics").includes("__other__") ? txt("topicOther") : "",
-      good: txt("good"), bad: txt("bad"), name: txt("name"), email: txt("email"), hp: f.elements.hp.value, sid
+      good: txt("good"), bad: txt("bad"), name: txt("name"), hp: f.elements.hp.value, sid
     };
     if (payload.biz !== "__other__") payload.bizOther = "";
     sending = true; const btns = $$("button.send");
@@ -415,7 +401,6 @@ footer{margin:26px 0 0;text-align:center;font:700 12px/1.7 var(--jp);color:#8a97
     const el = $("#fail"); el.textContent = "";
     const line = t => { const p = document.createElement("p"); p.textContent = t; el.appendChild(p); return p; };
     if (reason === "closed") line("このアンケートの受付は終了しました。ご協力ありがとうございました。");
-    else if (reason === "email") line("メールアドレスの形をご確認ください。");
     else if (reason === "other") line("「その他」を選んだ質問に、内容をご記入ください。");
     else {
       line("送信できませんでした。電波の良い所で、もう一度「回答を送信する」を押してください。入力した内容は残っています（同じ回答が二重に届くことはありません）。");
