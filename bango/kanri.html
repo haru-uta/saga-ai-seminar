@@ -1,0 +1,50 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>番号くばり（スクリーン用）</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"BIZ UDPGothic","Yu Gothic UI",sans-serif;background:linear-gradient(#fff6ea,#ffe2bf);color:#4a2a10;display:flex;align-items:center;justify-content:center;gap:5vw;padding:3vh 4vw}
+.qrbox{text-align:center}
+.qrbox img{width:min(62vh,44vw);height:auto;image-rendering:pixelated;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.qrbox p{font-size:min(4.2vh,3vw);font-weight:bold;margin:2vh 0 0}
+.side{text-align:center}
+.side h1{font-size:min(6vh,4.2vw);margin:0 0 2vh}
+.count{font-size:min(30vh,20vw);font-weight:bold;line-height:1;color:#c24f00}
+.count small{font-size:.28em;margin-left:.1em}
+.hint{font-size:min(3.4vh,2.4vw);margin-top:3vh;line-height:1.6}
+.st{font-size:14px;color:#8a6a50;margin-top:2vh;min-height:1.4em}
+.tools{position:fixed;right:12px;bottom:10px;font-size:13px;opacity:.35}
+.tools:hover{opacity:1}
+.tools button{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #b08060;background:#fff;color:#6a3a10;cursor:pointer}
+.tools .danger{background:#c0392b;color:#fff;border-color:#c0392b}
+</style></head><body>
+<div class="qrbox"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZoAAAGaAQAAAAAefbjOAAADL0lEQVR4nO1cS46jMBB9BqQsjZQD5CjOzUZ9pL4BHKVvAMtIRDWqj4HWLEZM0NDE9Ra0MSkB5dKrD+UOhM3oq+0ygAsZXBEGV4TBFWFwRRhcEQZXxJkUEQwNgJEPPHfHU2eBMf/gfsjjbYQL7aCIRIwBK2MAxgtRF4ljz1qu5yjUVf7Gimjs79gC6RMIiI9AfErAJJTBR76AejrHO1UutK8iagr3KMYQAtLwzL5i/zv9HS50GEcsGINSRkgdMWVMDWFcXfd1KsMiIscIuvD1hL4VD/FsqL9fKLA7ofO8U+VCryuil0yi5RhzAMIvPtzHC8mIbSNnHS/faRtc6CCOoGWivz3ywsdHQN9yTCkM8uKdKhc6hSKgWWVSKrAkkzoedXEC0VD/efWHv1PlQjsoIk5clBBS4OQiTuw1mlyZYMvptFDx8p02wYUO4ggSUhA+QJRTBo94biEK54j3N1iYJyD2ECREwRahZjEbiBYu3SJKiiMo1yPZf2g9m20DSXljypThcUQhFsEwjsgmoA5jDi/XDPLD36lyoT3iCGQTkDRDr7FtYD3nHFGQ1yB1HTmUxJojJKJg8nCLKMxrDJxkSh6aCxCaYehcthz3GqVkn+DYcfEVZhY50DSicIsoJvskI4q5XKkxpgaaDK9HlMURcU5BhSj0NNeqzIl4ZFlazbLTmRxAzuFlrkd49lnal66kuYaNMluY/8g04pFlKV+6iLQNu28B+miFMp7BQk7BGPj0mMfbBBfapavu2VB/mxqkgTsiIhDSV8O9EfzpU7zGAld5CV6jnpti5kqlJJ5LT75/1yhIiL6vvn7DwNwfocUppgzvjzjf4v6T1wh2Vk+E8WrbNxAHBB2NV3UbdIp3qlxon+8apI0x82iBcMT8Y69iF2F7Y97UKV3ZsoNHbYONgedyjfuYx9sEF9pVEYlrDx/tM9CHbAyWPkspRXz5TuAy93QJOKhMwxUhfV55B08A9Tc6yTtVLrTjni6ad/QRwK3ZN94YDN7vB9sT7Cp/a9vDuuIAiSxt3XNDHY81N7UE1SPLtxYK/p/JTrFOlQspXBEGV4TBFWFwRRhcEYb/p4jfFfSFgq1p5c8AAAAASUVORK5CYII=" alt="番号を受け取るQRコード"><p>スマホのカメラで読んでください</p></div>
+<div class="side"><h1>番号を配った人数</h1><div class="count"><span id="c">–</span><small>人</small></div>
+<p class="hint">くじの「参加人数」に<br>この数を入れます</p><p class="st" id="st"></p></div>
+<div class="tools"><span id="keyst"></span> <button id="rs">0に戻す</button> <button id="ok" class="danger" hidden>本当に0に戻す</button></div>
+<script>
+const API="https://script.google.com/macros/s/AKfycbxJhpMJG1srTCm4jzV-jy6cMCMEJ4tZyrmvVqI5tx8w3bXsp__wLmSo9IblYWJdK1uW/exec";
+const KK="saga_bango_admin";
+let key=""; try{key=localStorage.getItem(KK)||""}catch(e){}
+const h=new URLSearchParams(location.hash.slice(1)).get('k');
+if(h){key=h;try{localStorage.setItem(KK,h)}catch(e){}; history.replaceState(null,'',location.pathname)}
+const $=id=>document.getElementById(id);
+$('keyst').textContent=key?'':'（合言葉なし：0に戻せません）';
+let fails=0;
+async function tick(){
+  try{
+    const r=await fetch(API+'?a=count&t='+Date.now(),{cache:'no-store'}); const j=await r.json();
+    if(j.ok){$('c').textContent=j.count;fails=0;$('st').textContent=''}
+  }catch(e){ if(++fails>=2) $('st').textContent='つながりにくいようです（数が止まっていることがあります）'; }
+  setTimeout(tick,3000);
+}
+tick();
+let armT=null;
+$('rs').onclick=()=>{ if(!key){$('st').textContent='合言葉がないので0に戻せません';return}
+  $('ok').hidden=false; clearTimeout(armT); armT=setTimeout(()=>{$('ok').hidden=true},5000); };
+$('ok').onclick=async()=>{ $('ok').hidden=true;
+  try{ const r=await fetch(API+'?a=reset&key='+encodeURIComponent(key),{cache:'no-store'}); const j=await r.json();
+    $('st').textContent=j.ok?'0に戻しました':'0に戻せませんでした（'+j.error+'）'; }catch(e){$('st').textContent='0に戻せませんでした（通信）'} };
+</script></body></html>
