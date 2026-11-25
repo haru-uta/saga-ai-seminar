@@ -49,7 +49,7 @@ input[type=text]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4p
 .rc .side h1{margin-top:20px;font:900 44px/1.1 var(--jp);letter-spacing:.12em}
 .rc .side h1 small{display:block;font:600 14px var(--en);letter-spacing:.4em;color:#9fc4ff;margin-top:10px}
 .rc .side .meta{position:absolute;left:32px;right:20px;bottom:40px;font:500 13px/1.8 var(--en);color:#d8e6fb;word-break:break-all}
-.rc .side .meta b{display:block;font:600 11px var(--en);letter-spacing:.25em;color:#8fe3ff;margin-top:4px}
+.rc .side .meta b{display:block;font:700 11px var(--jp);letter-spacing:.25em;color:#8fe3ff;margin-top:4px}
 .rc .main{position:absolute;left:250px;right:0;top:0;bottom:0;padding:44px 52px}
 .rc .to{font:700 15px var(--jp);color:#7a869e;letter-spacing:.1em}
 .rc .to .nm{display:block;margin-top:6px;font:900 30px/1.3 var(--jp);color:var(--navy);letter-spacing:.02em;word-break:break-all;max-height:78px;overflow:hidden}
@@ -102,30 +102,32 @@ input[type=text]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4p
     <div class="sum">
       <span>発行</span><b>株式会社コネクトライ</b>
       <span>内容</span><b>セミナー参加費（1名分）</b>
-      <span>金額</span><b>¥3,000（税込・うち消費税 ¥272）</b>
+      <span>金額</span><b>¥3,000（税込・うち消費税等 ¥272）</b>
     </div>
+    <div class="line-warn hide" id="lineWarnForm">LINE の中で開いています。PDFで保存したい方は、右上（または右下）のメニューから「ブラウザで開く」を選んでから、宛名を入れてください。</div>
     <div class="err" id="err" role="alert"></div>
     <button class="btn" id="go" type="button">領収書を出す</button>
     <button class="btn sub hide" id="cancelFix" type="button">直すのをやめる（前の領収書に戻る）</button>
-    <div class="note">お一人につき1枚です。受付は12月18日までです。宛名を間違えたときは、出した後の画面の「宛名を直す」から1回だけ出し直せます。</div>
+    <div class="note">原則お一人1枚です。新しく出すのと宛名の直しは12月18日までです。宛名を間違えたときは、出した後の画面の「宛名を直す」から1回だけ出し直せます。</div>
+    <div class="hint">入力した宛名は、領収書の発行と、発行者（株式会社コネクトライ）の控えの保存だけに使います。</div>
   </div>
 
   <!-- できた領収書 -->
   <div class="done hide" id="done">
     <h2>領収書ができました</h2>
     <div class="line-warn hide" id="noSave">このブラウザは、出した領収書を覚えておけない設定です。いま「PDFで保存・印刷する」で保存してください。</div>
-    <div class="line-warn hide" id="lineWarn">LINE の中で開いているため、保存・印刷ができません。右上（または右下）のメニューから「ブラウザで開く」を選んで、もう一度開いてください。同じスマホなら、同じ領収書がそのまま出ます。</div>
+    <div class="line-warn hide" id="lineWarn">LINE の中で開いているため、PDFの保存・印刷ができません。この画面をスクリーンショットで保存してください（ブラウザで開き直すと、別のスマホとして扱われることがあります）。</div>
     <div class="stage" id="stage"><div class="scale" id="scale">
       <div class="rc" id="rc">
         <div class="test hide" id="testMark">試験用（無効）</div>
         <div class="fixmark hide" id="fixMark">訂正版：<span id="rRepl"></span> に代わるもの</div>
         <div class="side"><div class="k">SAGA SEMINAR 2026</div><h1>領収書<small>RECEIPT</small></h1>
-          <div class="meta"><b>NO.</b><span id="rNo"></span><b>DATE</b><span id="rIssued"></span></div></div>
+          <div class="meta"><b>NO.</b><span id="rNo"></span><b>発行日</b><span id="rIssued"></span></div></div>
         <div class="main">
           <div class="to">宛名<span class="nm" id="rNameBox"><span id="rName"></span><i>様</i></span></div>
           <div class="amt"><span class="l">領収金額</span><span class="v" id="rPrice"></span></div>
           <div class="rows">
-            <div><span>10%対象（税込）</span><b id="rBase"></b></div><div><span>うち消費税（10%）</span><b id="rTax"></b></div>
+            <div><span>10%対象（税込）</span><b id="rBase"></b></div><div><span>うち消費税等（10%）</span><b id="rTax"></b></div>
             <div><span>取引年月日</span><b id="rTrade"></b></div><div><span>数量</span><b id="rQty"></b></div>
           </div>
           <div class="tadashi">但し　<span id="rItem"></span>として、上記正に領収いたしました。</div>
@@ -137,10 +139,11 @@ input[type=text]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4p
     <div class="line-warn hide noprint" id="checking">控えの表で確かめています…（確かめ終わると保存・印刷できます）</div>
     <button class="btn noprint" id="print" type="button">PDFで保存・印刷する</button>
     <div class="how noprint">
+      <b>いちばん簡単なのは、この画面のスクリーンショット（画面の保存）です。</b>PDFにしたいときは：<br>
       <b>iPhone：</b>「PDFで保存・印刷する」→ 下の共有ボタン（□に↑）→「ファイルに保存」<br>
       <b>Android：</b>「PDFで保存・印刷する」→ プリンタの所で「PDF として保存」<br>
       <b>パソコン：</b>「PDFで保存・印刷する」→ 送信先で「PDF に保存」<br>
-      うまくいかないときは、この画面のスクリーンショットでも内容は確認できます。同じスマホでこのページを開き直すと、同じ領収書がもう一度出ます。
+      同じスマホでこのページを開き直すと、同じ領収書がもう一度出ます（2027年3月まで）。
     </div>
     <button class="btn sub noprint" id="fix" type="button">宛名を直す（番号の違う領収書を出し直します）</button>
   </div>
@@ -252,6 +255,7 @@ input[type=text]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4p
   });
   window.addEventListener('resize', function(){ if (!$('done').classList.contains('hide')) fit(); });
   if (state.from) { $('formTitle').textContent = '直した宛名を入れてください'; if (state.back) { $('name').value = state.back.name; $('cancelFix').classList.remove('hide'); } }
+  if (/ Line\//i.test(navigator.userAgent)) $('lineWarnForm').classList.remove('hide');
   open();
 })();
 </script>
