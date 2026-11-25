@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>領収書｜佐賀セミナー 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=BIZ+UDPGothic:wght@400;700&family=Inter+Tight:wght@500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0b1a3a;--blue:#2a6bff;--cyan:#13b6e6;--ink:#14213d;--sub:#56627a;--line:#d6deec;--soft:#f2f6fd;
+--jp:"Zen Kaku Gothic New","BIZ UDPGothic","Hiragino Sans","Yu Gothic UI",sans-serif;--ud:"BIZ UDPGothic","Hiragino Sans","Yu Gothic UI",sans-serif;--en:"Inter Tight","Helvetica Neue",Arial,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#eef2f8;color:var(--ink);font-family:var(--ud);-webkit-text-size-adjust:100%}
+.top{background:radial-gradient(ellipse 70% 120% at 90% 0%,rgba(19,182,230,.45),transparent 70%),radial-gradient(ellipse 80% 120% at 0% 100%,rgba(42,107,255,.5),transparent 70%),var(--navy);color:#fff;padding:22px 20px 26px}
+.top .k{font:600 11px var(--en);letter-spacing:.3em;color:#8fe3ff}
+.top h1{margin-top:8px;font:900 26px/1.3 var(--jp);letter-spacing:.06em}
+.top p{margin-top:6px;font:500 14px/1.6 var(--jp);color:#cfe0ff}
+.wrap{max-width:1040px;margin:0 auto;padding:18px 14px 40px}
+.panel{background:#fff;border-radius:18px;padding:20px 18px;box-shadow:0 2px 10px rgba(11,26,58,.07)}
+.panel h2{font:900 19px var(--jp);color:var(--navy)}
+label{display:block;margin-top:14px;font:700 15px var(--jp)}
+label small{font:400 13px var(--ud);color:var(--sub);margin-left:6px}
+input[type=text]{display:block;width:100%;margin-top:8px;font:700 20px var(--ud);padding:12px 14px;border:2px solid var(--line);border-radius:12px;color:var(--ink);background:#fff}
+input[type=text]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(42,107,255,.15)}
+.hint{margin-top:8px;font:400 13.5px/1.6 var(--ud);color:var(--sub)}
+.err{margin-top:10px;font:700 14.5px/1.6 var(--ud);color:#c0392b;min-height:1em}
+.btn{display:block;width:100%;margin-top:16px;font:900 18px var(--jp);letter-spacing:.06em;color:#fff;background:linear-gradient(90deg,var(--navy),#1d4fb8);border:none;border-radius:14px;padding:16px;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sub{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn.hide{display:none}
+.sum{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font:500 14px/1.7 var(--ud);background:var(--soft);border-radius:12px;padding:12px 14px}
+.sum span{color:var(--sub)}
+.note{margin-top:14px;border-radius:12px;background:#fff8e1;border:1.5px solid #f3d27a;padding:12px 14px;font:700 13.5px/1.7 var(--ud);color:#5a4500}
+.hide{display:none!important}
+.closed{text-align:center;padding:30px 18px}
+.closed b{display:block;font:900 20px/1.5 var(--jp);color:var(--navy)}
+.closed p{margin-top:8px;font:500 14.5px/1.7 var(--ud);color:var(--sub)}
+/* できた領収書：1000×640 の紙を画面の幅に縮めて見せる */
+.done h2{font:900 19px var(--jp);color:var(--navy)}
+.stage{margin-top:12px;position:relative}
+.scale{transform-origin:0 0;position:absolute;left:0;top:0}
+.how{margin-top:14px;font:500 14px/1.75 var(--ud);color:var(--ink);background:#fff;border-radius:14px;padding:14px 16px}
+.how b{color:var(--navy)}
+.line-warn{margin-top:12px;border-radius:12px;background:#fdecec;border:1.5px solid #f1a9a9;padding:12px 14px;font:700 14px/1.7 var(--ud);color:#8a1f1f}
+
+/* ===== 領収書（デザイン B） ===== */
+.rc{width:1000px;height:640px;position:relative;overflow:hidden;background:#fff;font-family:var(--jp);color:var(--ink);box-shadow:0 14px 36px rgba(11,26,58,.18)}
+.rc .side{position:absolute;left:0;top:0;bottom:0;width:250px;background:linear-gradient(170deg,#0b1a3a 0%,#123a7a 70%,#13b6e6 140%);color:#fff;padding:44px 32px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rc .side .k{font:600 12px var(--en);letter-spacing:.32em;color:#8fe3ff}
+.rc .side h1{margin-top:20px;font:900 44px/1.1 var(--jp);letter-spacing:.12em}
+.rc .side h1 small{display:block;font:600 14px var(--en);letter-spacing:.4em;color:#9fc4ff;margin-top:10px}
+.rc .side .meta{position:absolute;left:32px;right:20px;bottom:40px;font:500 13px/1.8 var(--en);color:#d8e6fb;word-break:break-all}
+.rc .side .meta b{display:block;font:600 11px var(--en);letter-spacing:.25em;color:#8fe3ff;margin-top:4px}
+.rc .main{position:absolute;left:250px;right:0;top:0;bottom:0;padding:44px 52px}
+.rc .to{font:700 15px var(--jp);color:#7a869e;letter-spacing:.1em}
+.rc .to .nm{display:block;margin-top:6px;font:900 30px/1.3 var(--jp);color:var(--navy);letter-spacing:.02em;word-break:break-all;max-height:78px;overflow:hidden}
+.rc .to .nm.long{font-size:24px}
+.rc .to .nm.vlong{font-size:19px}
+.rc .to .nm i{font-style:normal;font-size:20px;margin-left:10px;color:#56627a}
+.rc .amt{margin-top:22px;padding:22px 26px;border-radius:16px;background:#f2f6fd;display:flex;align-items:baseline;justify-content:space-between;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rc .amt .l{font:700 15px var(--jp);color:#56627a;letter-spacing:.1em}
+.rc .amt .v{font:800 64px var(--en);color:var(--navy);letter-spacing:-.01em}
+.rc .amt .v small{font:700 18px var(--jp);color:#56627a;margin-left:8px}
+.rc .rows{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:8px 30px;font:500 15px var(--ud);color:#2b3550}
+.rc .rows div{display:flex;justify-content:space-between;border-bottom:1px solid #e3e9f3;padding:7px 0}
+.rc .rows span{color:#7a869e}
+.rc .rows b{font-weight:700}
+.rc .tadashi{margin-top:14px;font:500 15px/1.7 var(--ud);color:#2b3550}
+.rc .iss{position:absolute;left:52px;right:52px;bottom:38px;display:flex;justify-content:space-between;align-items:flex-end;border-top:2px solid var(--navy);padding-top:14px}
+.rc .iss .nmx{font:900 22px var(--jp);color:var(--navy)}
+.rc .iss .ad{font:500 13px/1.7 var(--ud);color:#56627a}
+.rc .iss .reg{text-align:right;font:600 12px var(--en);letter-spacing:.2em;color:#7a869e}
+.rc .iss .reg b{display:block;font:800 22px var(--en);letter-spacing:.04em;color:var(--navy);margin-top:2px}
+.rc .fixmark{position:absolute;right:52px;top:14px;font:700 13px var(--ud);color:#8a4b00;background:#fff4dc;border:1.5px solid #e0b060;border-radius:6px;padding:2px 10px}
+.rc .test{position:absolute;right:14px;top:12px;font:700 13px var(--ud);color:#c0392b;border:1.5px solid #c0392b;border-radius:6px;padding:2px 8px;background:#fff}
+
+/* 印刷・PDF：A4 横に領収書だけを置く */
+@page{size:A4 landscape;margin:12mm}
+@media print{
+  body{background:#fff}
+  .top,.panel,.how,.line-warn,.btn,.done h2,.noprint{display:none!important}
+  .wrap{padding:0;max-width:none}
+  .stage{height:auto!important;margin:0}
+  .scale{position:static;transform:none!important}
+  .rc{box-shadow:none;border:1px solid #c9d3e6;margin:0 auto}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="k">SAGA SEMINAR 2026</div><h1>参加費の領収書</h1>
+<p>バックオフィス業務効率化セミナー（2026年12月11日）</p></div>
+
+<div class="wrap">
+  <!-- 受付前・終了後 -->
+  <div class="panel closed hide" id="closed"><b id="closedTitle"></b><p id="closedText"></p></div>
+
+  <!-- 宛名を入れる -->
+  <div class="panel" id="form">
+    <h2 id="formTitle">宛名を入れてください</h2>
+    <label for="name">宛名<small>会社名・事業所名・お名前など</small></label>
+    <input type="text" id="name" maxlength="60" autocomplete="organization" placeholder="例：株式会社〇〇">
+    <div class="hint">領収書には「（入れた宛名） 様」と載ります。60文字まで。</div>
+    <div class="sum">
+      <span>発行</span><b>株式会社コネクトライ</b>
+      <span>内容</span><b>セミナー参加費（1名分）</b>
+      <span>金額</span><b>¥3,000（税込・うち消費税 ¥272）</b>
+    </div>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn" id="go" type="button">領収書を出す</button>
+    <button class="btn sub hide" id="cancelFix" type="button">直すのをやめる（前の領収書に戻る）</button>
+    <div class="note">お一人につき1枚です。受付は12月18日までです。宛名を間違えたときは、出した後の画面の「宛名を直す」から1回だけ出し直せます。</div>
+  </div>
+
+  <!-- できた領収書 -->
+  <div class="done hide" id="done">
+    <h2>領収書ができました</h2>
+    <div class="line-warn hide" id="noSave">このブラウザは、出した領収書を覚えておけない設定です。いま「PDFで保存・印刷する」で保存してください。</div>
+    <div class="line-warn hide" id="lineWarn">LINE の中で開いているため、保存・印刷ができません。右上（または右下）のメニューから「ブラウザで開く」を選んで、もう一度開いてください。同じスマホなら、同じ領収書がそのまま出ます。</div>
+    <div class="stage" id="stage"><div class="scale" id="scale">
+      <div class="rc" id="rc">
+        <div class="test hide" id="testMark">試験用（無効）</div>
+        <div class="fixmark hide" id="fixMark">訂正版：<span id="rRepl"></span> に代わるもの</div>
+        <div class="side"><div class="k">SAGA SEMINAR 2026</div><h1>領収書<small>RECEIPT</small></h1>
+          <div class="meta"><b>NO.</b><span id="rNo"></span><b>DATE</b><span id="rIssued"></span></div></div>
+        <div class="main">
+          <div class="to">宛名<span class="nm" id="rNameBox"><span id="rName"></span><i>様</i></span></div>
+          <div class="amt"><span class="l">領収金額</span><span class="v" id="rPrice"></span></div>
+          <div class="rows">
+            <div><span>10%対象（税込）</span><b id="rBase"></b></div><div><span>うち消費税（10%）</span><b id="rTax"></b></div>
+            <div><span>取引年月日</span><b id="rTrade"></b></div><div><span>数量</span><b id="rQty"></b></div>
+          </div>
+          <div class="tadashi">但し　<span id="rItem"></span>として、上記正に領収いたしました。</div>
+          <div class="iss"><div><div class="nmx" id="rIssuer"></div><div class="ad" id="rAddr"></div></div>
+            <div class="reg">登録番号<b id="rReg"></b></div></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="line-warn hide noprint" id="checking">控えの表で確かめています…（確かめ終わると保存・印刷できます）</div>
+    <button class="btn noprint" id="print" type="button">PDFで保存・印刷する</button>
+    <div class="how noprint">
+      <b>iPhone：</b>「PDFで保存・印刷する」→ 下の共有ボタン（□に↑）→「ファイルに保存」<br>
+      <b>Android：</b>「PDFで保存・印刷する」→ プリンタの所で「PDF として保存」<br>
+      <b>パソコン：</b>「PDFで保存・印刷する」→ 送信先で「PDF に保存」<br>
+      うまくいかないときは、この画面のスクリーンショットでも内容は確認できます。同じスマホでこのページを開き直すと、同じ領収書がもう一度出ます。
+    </div>
+    <button class="btn sub noprint" id="fix" type="button">宛名を直す（番号の違う領収書を出し直します）</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var API = 'https://script.google.com/macros/s/AKfycbxKaQuqLMHEtHGCaSxlmRdQlbRFz7bWeUEri1tv6ZtOhJLZnSd4JZIdr-KNKVBh0CzLbA/exec';
+  var FROM = '2026-12-11T00:00:00+09:00', UNTIL = '2026-12-18T23:59:59+09:00';
+  var LS = 'saga2026_receipt_v2';
+  var TEST = (location.hash.match(/(?:^#|&)t=([A-Za-z0-9]+)/) || [])[1] || '';   // 試験のときだけ #t=合言葉
+  var KEY = LS + (TEST ? '_t' : '');
+  var $ = function(id){ return document.getElementById(id); };
+  function yen(n){ return '¥' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function jdate(s){ var m = String(s).split('-'); return m[0] + '年' + (+m[1]) + '月' + (+m[2]) + '日'; }
+  var canSave = true;
+  try { localStorage.setItem(KEY + '_x', '1'); localStorage.removeItem(KEY + '_x'); } catch(e){ canSave = false; }
+  var mem = {};
+  function load(){ if (!canSave) return mem; try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
+  function save(o){ mem = o; if (!canSave) return; try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){ canSave = false; } }
+  function newRid(){ var a = new Uint8Array(16), s = ''; (window.crypto || window.msCrypto).getRandomValues(a); for (var i = 0; i < a.length; i++) s += ('0' + a[i].toString(16)).slice(-2); return s; }
+  // state.rid＝これから出す（または出した）領収書の識別子。state.has＝表に出した物がある。state.from＝直すときの元
+  var state = load();
+  if (!state.rid) { state = { rid: newRid() }; save(state); }
+
+  function fit(){
+    var st = $('stage'), sc = $('scale'); var w = Math.min(1000, st.clientWidth); var k = w / 1000;
+    sc.style.transform = 'scale(' + k + ')'; st.style.height = Math.ceil(640 * k) + 'px';
+  }
+  function show(r, sure){
+    $('rNo').textContent = r.no; $('rIssued').textContent = r.issued.replace(/-/g, '.');
+    $('rName').textContent = r.name;
+    $('rNameBox').className = 'nm' + (r.name.length > 34 ? ' vlong' : r.name.length > 20 ? ' long' : '');
+    $('rPrice').textContent = yen(r.price); var sm = document.createElement('small'); sm.textContent = '税込'; $('rPrice').appendChild(sm);
+    $('rBase').textContent = yen(r.price); $('rTax').textContent = yen(r.tax);
+    $('rTrade').textContent = jdate(r.tradeDate); $('rItem').textContent = r.item; $('rQty').textContent = r.qty + '名';
+    $('rIssuer').textContent = r.issuer; $('rAddr').textContent = r.issuerAddr; $('rReg').textContent = r.regNo;
+    $('testMark').classList.toggle('hide', r.no.indexOf('TEST-') !== 0);
+    $('fixMark').classList.toggle('hide', !r.replaces); $('rRepl').textContent = r.replaces || '';
+    $('fix').classList.toggle('hide', r.kind === '訂正' || Date.now() > Date.parse(UNTIL));
+    $('form').classList.add('hide'); $('closed').classList.add('hide'); $('done').classList.remove('hide');
+    if (/ Line\//i.test(navigator.userAgent)) $('lineWarn').classList.remove('hide');
+    $('noSave').classList.toggle('hide', canSave);
+    $('print').disabled = !sure; $('checking').classList.toggle('hide', !!sure);
+    fit();
+  }
+  function closed(title, text){ $('closedTitle').textContent = title; $('closedText').textContent = text; $('closed').classList.remove('hide'); $('form').classList.add('hide'); $('done').classList.add('hide'); }
+  function closedByTime(){
+    if (Date.now() < Date.parse(FROM)) closed('12月11日（セミナー当日）から発行できます', 'この紙は、当日まで手元に置いておいてください。');
+    else closed('領収書の受付は終了しました（12月18日まで）', '必要な方は、主催の株式会社コネクトライへお問い合わせください。');
+  }
+  var MSG = { name: '宛名を1〜60文字で入れてください（記号だけ・「=」「+」「-」「@」で始まる宛名は使えません）。',
+    full: '発行の上限に達しました。主催者にお声がけください。', busy: '混み合っています。少し待ってから、もう一度押してください（押し直しても二重には出ません）。',
+    rid: 'ページを開き直してから、もう一度お試しください。', key: '試験用の合言葉が違います。', once: '宛名の直しは1回までです。主催者にお声がけください。',
+    none: '前の領収書が見つかりませんでした。主催者にお声がけください。', big: '宛名が長すぎます。' };
+
+  function call(body){
+    if (TEST) body.test = TEST;
+    var ctl = window.AbortController ? new AbortController() : null; var tm = setTimeout(function(){ if (ctl) ctl.abort(); }, 30000);
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined })
+      .then(function(r){ clearTimeout(tm); return r.json(); }, function(e){ clearTimeout(tm); throw e; });
+  }
+
+  function issue(){
+    var name = $('name').value.replace(/[\s　]+/g, ' ').trim();
+    if (!name || name.length > 60 || /^[=+\-@]/.test(name)) { $('err').textContent = MSG.name; $('name').focus(); return; }
+    $('err').textContent = ''; $('go').disabled = true; $('go').textContent = '発行しています…';
+    var body = state.from ? { a: 'correct', rid: state.rid, from: state.from, name: name } : { a: 'issue', rid: state.rid, name: name };
+    call(body).then(function(r){
+      if (!r.ok) {
+        if (r.error === 'closed') { closedByTime(); return; }
+        $('err').textContent = MSG[r.error] || '発行できませんでした。もう一度押してください。'; return;
+      }
+      state = { rid: r.rid || state.rid, has: true, cache: r };
+      save(state); show(r, true); window.scrollTo(0, 0);
+    }).catch(function(){ $('err').textContent = 'つながりませんでした。電波のよい所で、もう一度押してください（押し直しても二重には出ません）。'; })
+      .then(function(){ $('go').disabled = false; $('go').textContent = '領収書を出す'; });
+  }
+
+  // 開いたとき：出した物があれば、表（正本）から取り直して見せる
+  function open(){
+    if (state.from && state.back && !TEST && Date.now() > Date.parse(UNTIL)) { state = { rid: state.from, has: true, cache: state.back }; save(state); }
+    if (!state.has) {
+      if (!TEST && (Date.now() < Date.parse(FROM) || Date.now() > Date.parse(UNTIL))) closedByTime();
+      return;
+    }
+    if (state.cache) show(state.cache, false);   // まず手元の写しを「確認中」で出し、表の中身で置き換える
+    call({ a: 'get', rid: state.rid }).then(function(r){
+      if (r.ok && r.voidBy && r.voidByRid) {      // 別の画面で直してあった → 直した方を出す
+        state.rid = r.voidByRid; save(state); return call({ a: 'get', rid: state.rid }).then(function(r2){ if (r2.ok) { state.cache = r2; save(state); show(r2, true); } });
+      }
+      if (r.ok) { state.cache = r; save(state); show(r, true); }
+      else if (r.error === 'none') { state = { rid: newRid() }; save(state); $('done').classList.add('hide'); $('form').classList.remove('hide'); }
+    }).catch(function(){ $('checking').textContent = 'つながらないため、控えの表で確かめられません。電波のよい所で開き直すと、保存・印刷できるようになります。'; });
+  }
+
+  $('go').addEventListener('click', issue);
+  $('name').addEventListener('keydown', function(e){ if (e.key === 'Enter') issue(); });
+  $('print').addEventListener('click', function(){ window.print(); });
+  $('fix').addEventListener('click', function(){
+    if (!confirm('宛名を直して、番号の違う領収書を出し直します（直しは1回までです）。前の領収書は使えなくなります。よろしいですか？')) return;
+    var old = state.cache; state = { rid: newRid(), from: state.rid, cache: null, back: old }; save(state); $('cancelFix').classList.remove('hide');
+    $('done').classList.add('hide'); $('form').classList.remove('hide'); $('formTitle').textContent = '直した宛名を入れてください';
+    if (old) $('name').value = old.name; $('name').focus();
+  });
+  $('cancelFix').addEventListener('click', function(){
+    if (!state.from || !state.back) return;
+    state = { rid: state.from, has: true, cache: state.back }; save(state); $('cancelFix').classList.add('hide'); $('formTitle').textContent = '宛名を入れてください'; open();
+  });
+  window.addEventListener('resize', function(){ if (!$('done').classList.contains('hide')) fit(); });
+  if (state.from) { $('formTitle').textContent = '直した宛名を入れてください'; if (state.back) { $('name').value = state.back.name; $('cancelFix').classList.remove('hide'); } }
+  open();
+})();
+</script>
+</body></html>
